@@ -24,7 +24,7 @@ function random(min, max) {
 const drawPoint = (x, y) => {
 	for (let i = 0; i < snake.tail.length; i++) {
 		if(snake.tail[i].x == x && snake.tail[i].y == y)
-			return '⬜'
+			return '🟩'
 	}
 
 	if(x == fruit.x && y == fruit.y) 
