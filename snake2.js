@@ -1,4 +1,6 @@
 const readline = require('readline')
+const prompt = require("prompt-sync")({ sigint: true })
+const fs = require("fs")
 
 let direction = 'right'
 let speed = 100
@@ -7,6 +9,7 @@ let color = '🟩'
 let grow = 0
 let invincible = false
 let blinkInterval = null
+let leaderboard = []
 
 const map = {
 	width: 64,
@@ -160,9 +163,29 @@ const draw = () => {
 	console.log('POINTS: ' + tail.length)
 }
 
+const save = (name, points) => {
+	leaderboard.push({ name: name, points: points})
+	fs.writeFileSync('leaderboard.json', JSON.stringify(leaderboard))
+}
+
+const showLeaderboard = () => {
+	const sorted = leaderboard.sort((a, b) => a.points - b.points)
+	const top = leaderboard.slice(0, 5);
+	top.forEach((el, index) => {
+		console.log(index + 1 + ' | ' + el.points + ' - ' + el.name)
+	})
+}
+
 const die = () => {
 	if(invincible) return;
+	clearInterval(updateInterval)
+	console.log("==================")
 	console.log('You eaten yourself')
+	console.log('Points: ' + tail.length)
+	console.log("==================")
+	const name = prompt("Enter your name: ")
+	save(name, tail.length)
+	showLeaderboard()
 	process.exit()
 }
 
@@ -236,6 +259,10 @@ const update = () => {
 }
 
 const main = () => {
+	if(fs.existsSync('leaderboard.json')) {
+		let file = fs.readFileSync('leaderboard.json')
+		leaderboard = JSON.parse(file)
+	}
 	readline.emitKeypressEvents(process.stdin);
 
 	if (process.stdin.isTTY)
