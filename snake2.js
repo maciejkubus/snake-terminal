@@ -169,7 +169,7 @@ const save = (name, points) => {
 }
 
 const showLeaderboard = () => {
-	const sorted = leaderboard.sort((a, b) => a.points - b.points)
+	const sorted = leaderboard.sort((a, b) => b.points - a.points)
 	const top = leaderboard.slice(0, 5);
 	top.forEach((el, index) => {
 		console.log(index + 1 + ' | ' + el.points + ' - ' + el.name)
